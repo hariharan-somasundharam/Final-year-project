@@ -1,0 +1,454 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{caption}
+\usepackage{float}
+
+% Improved title formatting
+\title{\vspace{-2cm}\centering\Large\textbf{Real-Time Bus Tracking System Using IoT}}
+\author{
+Dr G. Indirani, \textit{Associate Professor}, S. Hariharan, \textit{B.E.CSE}, S. Pratheeba, \textit{B.E. CSE},\\
+S. Aravind, \textit{B.E. CSE}, M. Jagadeshan, \textit{B.E. CSE}\\
+\textbf{Department of Computer Science}\\
+\textbf{Government College of Engineering, Thanjavur, India}
+}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{multicols}{2}
+
+\section*{Abstract}
+This paper presents a cost-effective real-time bus tracking system designed for educational institutions and small transit networks. A Real-Time Bus Tracking System is an innovative IoT-based solution designed to revolutionise public transportation by providing accurate, real-time bus location data and arrival predictions to passengers and transit authorities. The system leverages GPS technology (Neo-6M module) and ESP32 microcontrollers to capture live bus coordinates (latitude, longitude, and speed) at 5-second intervals, ensuring up-to-date tracking. By integrating a Flask-based web interface with Firebase Realtime Database, the system processes and displays bus locations dynamically, enabling passengers to make informed travel decisions.
+
+\vspace{1em}
+At its core, the system employs the Haversine formula to calculate the distance between a bus's current GPS position and predefined bus stops, automatically updating the bus's "current stop" when within a 200-metre threshold. For passengers, the system offers two key modules: Bus-Specific Tracking: Users can input a unique bus ID to view the bus's current stop, route progression, and estimated arrival time (ETA) at their selected boarding point. Route-Based Search: Passengers can enter start and destination stops to retrieve a list of available buses, their current locations, and ETAs, presented in an intuitive tabular format with visual route maps.
+
+\vspace{1em}
+The ETA calculation algorithm compares the bus's current stop index with the user's selected stop along the route. If the bus hasn't passed the stop, the system sums the distances between intermediate stops and divides by the bus's current speed (fetched from GPS) to predict arrival time. Results are displayed as both clock time (e.g., 10:15 AM) and time remaining (e.g., "8 minutes"), enhancing usability.
+
+\section{Introduction}
+\vspace{0.5em}
+In today's fast-paced urban environments, public transportation systems are vital for ensuring mobility, minimizing traffic congestion, and reducing environmental impacts. However, the lack of real-time information about bus locations often leads to commuter frustration, inefficiencies, and delays. To address this gap, the Real-Time Bus Tracking System has been developed as a smart solution that leverages GPS, Flask, Firebase, and SQLAlchemy to provide live bus tracking and Estimated Time of Arrival (ETA) for each stop.
+
+\vspace{1em}
+This project enables users to view the current position of buses on predefined routes, track estimated arrival times at each stop, and receive notifications in case of delays or breakdowns. It also provides visualisation and analysis tools for administrators to manage routes, monitor vehicle status, and enhance route efficiency.
+
+\begin{table}[H]
+\centering
+\caption{Comparison with Existing Systems}
+\label{tab:comparison}
+\begin{tabular}{p{4cm}p{3cm}}
+\toprule
+\textbf{Limitation} & \textbf{Our Solution} \\
+\midrule
+No live tracking & Real-time GPS via Firebase \\
+Fixed ETAs & Dynamic speed-based calculation \\
+No breakdown alerts & Automatic detection \\
+High cost & Open-source stack \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{System Architecture}
+\vspace{0.5em}
+The system follows a modular three-tier architecture (Figure \ref{fig:arch}) designed for scalability, reliability, and real-time performance.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{architecture.png} % Replace with your image
+\caption{System Architecture Diagram}
+\label{fig:arch}
+\end{figure}
+
+\begin{enumerate}
+\item \textbf{Device Layer}: Each bus is equipped with an ESP32 microcontroller paired with a NEO-6M GPS module. This hardware captures real-time latitude, longitude, and speed data. The ESP32 connects to Wi-Fi networks to transmit this data every 5 seconds to the cloud. It is powered by a 4300 mAh Li-ion battery, ensuring continuous operation, and optionally includes a 16x2 LCD display to show local GPS and speed readings.
+
+\item \textbf{Cloud Layer}: The Firebase Realtime Database serves as the central data aggregation and synchronisation hub. It stores incoming GPS updates, organises bus-specific data under dedicated paths, and provides low-latency access to backend services. Firebase offers scalability, real-time synchronisation, and easy integration with both mobile and web platforms.
+
+\item \textbf{Application Layer}: A Flask server runs background threads polling Firebase every 5 seconds. The backend processes incoming data, stores it in an SQLite database via SQLAlchemy ORM, calculates ETAs using the Haversine formula, and detects breakdown conditions such as prolonged inactivity or data absence. The processed data is served to users via a responsive web dashboard, built with HTML, CSS, Bootstrap, and Jinja2 templates, providing live ETAs, bus locations, and alerts.
+\end{enumerate}
+
+\textbf{Integration Flow:} The system ensures that GPS data from the device layer seamlessly flows through the cloud layer into the application layer, delivering real-time insights to both commuters and administrators with minimal latency (typically within 5–10 seconds).
+
+
+\section{Hardware Implementation}
+\vspace{0.5em}
+The hardware implementation of the Real-Time Bus Tracking System focuses on integrating low-cost, reliable components that enable continuous GPS tracking, data transmission, and in-vehicle monitoring.
+
+Table \ref{tab:hardware} details the hardware components:
+
+\begin{table}[H]
+\centering
+\caption{Hardware Specifications}
+\label{tab:hardware}
+\begin{tabular}{p{3cm}p{4cm}}
+\toprule
+\textbf{Component} & \textbf{Specification} \\
+\midrule
+Microcontroller & ESP32 Dev Module \\
+GPS Module & NEO-6M \\
+Power Supply & 3.7V 4300mAh Li-ion \\
+Display & 16x2 LCD \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{ESP32 Microcontroller}
+The ESP32 DevKit is a compact, dual-core microcontroller with built-in Wi-Fi and Bluetooth capabilities. Its key advantages include low power consumption, high processing speed, and compatibility with a wide range of peripheral modules. In this system, the ESP32 is programmed using the Arduino IDE, with libraries such as Firebase ESP32 and TinyGPS++ for seamless integration with GPS modules and Firebase Realtime Database.
+
+\subsection{NEO-6M GPS Module}
+The NEO-6M GPS module provides accurate location data, including latitude, longitude, altitude, speed, and timestamp. It communicates with the ESP32 over UART using the NMEA protocol. The module typically achieves a positioning accuracy of 2.5 metres under open sky conditions, making it suitable for real-time vehicle tracking. A patch antenna ensures stable satellite reception, while an onboard battery retains GPS configuration and reduces time-to-first-fix.
+
+\subsection{Power Supply}
+The hardware is powered by a 4300 mAh Li-ion rechargeable battery, regulated through an AMS1117 3.3V voltage regulator to meet the ESP32's and GPS module's voltage requirements. This setup ensures several hours of continuous operation, even in the absence of an external power source. Power management considerations include low-dropout regulation and efficient battery utilization.
+
+\subsection{Optional Components}
+An optional 16x2 LCD display can be connected to the ESP32 to show local GPS status, current speed, or system messages, enhancing in-vehicle feedback. Additionally, the hardware enclosure is designed for robustness, protecting components from vibration, dust, and moisture commonly encountered in vehicular environments.
+
+\subsection{System Integration}
+All hardware components are assembled onto a prototype board or compact PCB for deployment inside the bus. The assembled unit is tested for Wi-Fi connectivity, GPS signal acquisition, and Firebase communication before installation. The modular design allows for easy scaling across multiple buses with minimal reconfiguration, making the system adaptable for small to medium fleet deployments.
+
+\section{Software Components}
+\vspace{0.5em}
+The software stack of the Real-Time Bus Tracking System is designed to efficiently handle data acquisition, processing, storage, and user interface delivery, leveraging open-source tools and lightweight frameworks.
+
+The system uses:
+
+\vspace{0.8em}
+\begin{itemize}
+\item Python 3.9 with Flask backend
+\vspace{0.5em}
+\item Firebase for real-time sync
+\vspace{0.5em}
+\item SQLAlchemy with SQLite
+\vspace{0.5em}
+\item Bootstrap 5 frontend
+\end{itemize}
+
+\subsection{Backend Server (Flask)}
+The core backend is developed using the Flask framework in Python. Flask is selected for its simplicity, modularity, and ability to handle both RESTful requests and background tasks. It manages polling operations from the Firebase Realtime Database, processes incoming GPS data, calculates ETAs using the Haversine formula, and flags breakdown conditions. Flask also integrates with the SQLAlchemy ORM for database operations, enabling seamless interaction with the local SQLite database.
+
+\subsection{Database Layer (SQLite + SQLAlchemy)}
+The backend uses SQLite, a lightweight, file-based relational database, to store historical GPS data, bus records, and route details. SQLAlchemy serves as the ORM layer, abstracting raw SQL queries and allowing the backend to perform insertions, updates, and queries in a Pythonic way. This setup ensures fast local data access and simplifies data management.
+
+\subsection{Cloud Service (Firebase Realtime Database)}
+Firebase Realtime Database is employed as the cloud-based intermediary for storing and synchronising GPS data from the device layer. It provides real-time data synchronisation with minimal latency, making it ideal for time-sensitive applications like live bus tracking. The Firebase ESP32 client library facilitates secure, authenticated communication between devices and the cloud.
+
+\subsection{Frontend Interface (Web Dashboard)}
+The user interface is built as a web dashboard using HTML, CSS, Bootstrap, and Jinja2 templates rendered by Flask. JavaScript enables dynamic updates, refreshing displayed bus data and ETAs in near real-time. The dashboard allows users to view live bus positions, estimated arrival times, and system status alerts, enhancing the commuter experience and administrative monitoring.
+
+\subsection{Integration and Testing}
+Extensive integration testing ensures seamless communication between hardware, backend, and frontend components. Simulated and live tests validate polling intervals, data accuracy, database performance, and user interface responsiveness. The modular software design allows for easy future expansion, such as adding mobile apps or integrating advanced analytics modules.
+
+\vspace{0.5em}
+Key algorithms include the Haversine formula for distance calculation:
+
+\begin{equation}
+a = \sin^2(\Delta\phi/2) + \cos\phi_1 \cdot \cos\phi_2 \cdot \sin^2(\Delta\lambda/2)
+\end{equation}
+
+\begin{equation}
+d = 2R \cdot \arctan2(\sqrt{a}, \sqrt{1-a})
+\end{equation}
+
+\columnbreak
+
+\section{System Features}
+\vspace{0.5em}
+The Real-Time Bus Tracking System provides a robust set of features that enhance operational transparency, commuter convenience, and administrative oversight.\\\\
+GPS modules transmit data every 5 seconds to Firebase. Figure \ref{fig:gps} shows the data flow.
+
+
+\subsection{Real-Time Location Tracking}
+The system continuously captures and updates bus locations on a centralised platform, offering live positional data every 5 seconds. Users can view the current geographic position of each bus, improving route visibility and reducing uncertainty.
+
+\subsection{Estimated Time of Arrival (ETA) Predictions}
+The backend calculates dynamic ETAs for upcoming stops using the Haversine formula and current bus speed. This feature provides commuters with reliable arrival estimates, helping them plan their journeys more efficiently.
+
+\subsection{Breakdown Detection and Alerts}
+The system monitors bus movement patterns to detect anomalies such as prolonged inactivity or missing GPS signals. When a potential breakdown or communication failure is detected, the system flags the affected bus and updates the dashboard, enabling swift administrative response.
+
+\subsection{Interactive Web Dashboard}
+The frontend dashboard presents intuitive visualisations, including live maps, status indicators, and ETA counters. It allows commuters and administrators to track buses, view operational status, and receive alerts in real time, all from a web-accessible interface.
+
+\subsection{Data Logging and Historical Analysis}
+The system logs historical GPS data into a local SQLite database, enabling post-run analysis, performance monitoring, and the generation of operational reports. This feature supports continuous service improvement and strategic decision-making.
+
+\subsection{Scalability and Modularity}
+The architecture is designed to scale easily across multiple buses and routes without significant reconfiguration. Modular software and hardware components allow for straightforward expansion, making the system adaptable to both small institutional fleets and larger urban networks.
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{data_flow.png} % Replace with your image
+\caption{GPS Data Flow}
+\label{fig:gps}
+\end{figure}
+
+
+\section{Testing and Results}
+\vspace{0.5em}
+Testing is a critical phase in the development lifecycle to ensure that each component functions as expected and that the entire system works cocohesively.  ensure the system's accuracy, stability, and responsiveness, extensive testing was conducted across various modules, including GPS data handling, ETA calculations, breakdown detection, and user interface updates. Testing covered unit, integration, system, and performance levels. The system was rigorously tested, with the results shown in Table \ref{tab:results}.
+
+\subsection{Unit Testing}
+Individual modules were tested with mock data:
+\begin{itemize}
+  \item \textbf{Haversine Formula}: Verified using known geographic coordinates to ensure accurate distance calculations.
+  \item \textbf{GPS Polling}: Simulated Firebase updates to test backend data acquisition functions.
+  \item \textbf{Breakdown Logic}: Tested scenarios with both no movement and no data conditions.
+\end{itemize}
+
+\subsection{Integration Testing}
+The integration between the Firebase cloud, Flask server, SQLite database, and the frontend dashboard was validated using simulated bus data. Tests confirmed:
+\begin{itemize}
+  \item Real-time sysynchronisationf GPS coordinates from Firebase to the local database.
+  \item Accurate route-stop linking and ETA computations.
+  \item Timely UI updates with new GPS and ETA values.
+\end{itemize}
+
+\subsection{System Testing}
+End-to-end testing was performed under controlled conditions:
+\begin{itemize}
+  \item Multiple buses were simulated with different speeds and routes.
+  \item Stop selections triggered ETA responses on the dashboard.
+  \item Breakdowns were simulated by disabling GPS updates or fixing the bus location.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\caption{System Test Scenarios and Outcomes}
+\label{tab:results}
+\begin{tabular}{|p{2.5cm}|p{3cm}|p{1.5cm}|}
+\hline
+\textbf{Test Scenario} & \textbf{Expected Result} & \textbf{Outcome} \\
+\hline
+Bus at Stop A, Speed 30 km/h & ETA to Stop C shown & Passed \\
+\hline
+GPS disabled for 20 min & Breakdown alert triggered & Passed \\
+\hline
+User selects passed stop & “Bus has passed this stop” & Passed \\
+\hline
+Multiple bus tracking & Individual ETAs and stops shown & Passed \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Performance Testing}
+The system was stress-tested with:
+\begin{itemize}
+  \item Continuous GPS updates every 5 seconds.
+  \item Over 100 updates/hour per bus.
+  \item Dashboard auto-refresh load for concurrent users.
+\end{itemize}
+Latency for data processing and ETA display was maintained within 2–3 seconds, validating the system's suitability for real-time applications.
+
+\subsection{Result Summary}
+\begin{itemize}
+  \item \textbf{GPS Tracking Accuracy:} Real-time updates within 5-second intervals.
+  \item \textbf{ETA Accuracy:} Within ±2 minutes under typical traffic conditions.
+  \item \textbf{Breakdown Alerts:} Triggered under both movement and communication faults.
+  \item \textbf{UI Responsiveness:} All visual components updated correctly with minimal lag.
+\end{itemize}
+
+The test results confirm that the Real-Time Bus Tracking System is functionally robust, responsive under load, and capable of handling real-world deployments for small- to medium-scale transport operations.
+
+
+\section{User Interface}
+\vspace{0.5em}
+The web dashboard (Figure \ref{fig:dash}) provides an interactive interface with four key functional modules:
+
+\subsection{Core Functional Modules}
+\begin{itemize}
+\item \textbf{Bus Tracking Module}:
+\begin{itemize}
+\vspace{0.3em}
+\item Real-time GPS position visualization on route map
+\item Color-coded stop status indicators (green=passed, blue=next, red=current)
+\item Dynamic progress bar showing route completion percentage
+\end{itemize}
+
+\vspace{0.5em}
+\item \textbf{ETA Calculation Module}:
+\begin{itemize}
+\vspace{0.3em}
+\item Dual-format display (absolute time + countdown)
+\item Speed-adjusted predictions using Haversine algorithm
+\item Fallback to static schedules when GPS unavailable
+\end{itemize}
+
+\vspace{0.5em}
+\item \textbf{Breakdown Alert System}:
+\begin{itemize}
+\vspace{0.3em}
+\item Visual warning banners with last known location
+\item Automatic notification when bus inactive >15 minutes
+\item Historical incident logging for analysis
+\end{itemize}
+
+\vspace{0.5em}
+\item \textbf{Route Management}:
+\begin{itemize}
+\vspace{0.3em}
+\item Interactive stop selection dropdowns
+\item Multi-route visualization with bus filtering
+\item Administrator controls for route editing
+\end{itemize}
+\end{itemize}
+
+\subsection{Technical Implementation}
+The frontend combines several technologies:
+
+\begin{table}[H]
+\centering
+\caption{Frontend Technology Stack}
+\label{tab:frontend}
+\begin{tabular}{p{3.5cm}p{3.5cm}}
+\toprule
+\textbf{Component} & \textbf{Implementation} \\
+\midrule
+Real-time Updates & Firebase listeners with 5s refresh \\
+Route Visualization & SVG-based progress bars with Jinja2 templating \\
+Data Binding & JavaScript EventSource API for live updates \\
+Responsive Design & Bootstrap 5 grid system + media queries \\
+Breakdown Alerts & Firebase-triggered DOM manipulation \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Key Interface Elements}
+The dashboard features three specialised views:
+
+\subsubsection{Bus-Specific Tracking View}
+\begin{itemize}
+\item Input field for bus ID (e.g., "Bus 101")
+\item Current stop display with timestamp
+\item Route timeline showing:
+\begin{itemize}
+\item Passed stops (grayed out)
+\item Current position (highlighted)
+\item Upcoming stops with ETAs
+\end{itemize}
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\linewidth]{track_by_Id.png}
+\caption{Tacking by Bus ID}
+\label{fig:component1}
+\end{figure}
+
+\subsubsection{Route-Based Search View}
+\begin{itemize}
+\item Dual dropdown selectors for start/end stops
+\item Filterable table of available buses showing:
+\begin{itemize}
+\item Current location
+\item ETA at selected stop
+\item Time remaining
+\end{itemize}
+\item "View Route" action buttons
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\linewidth]{search_by_route.png}
+\caption{Search by Route}
+\label{fig:component2}
+\end{figure}
+
+\subsubsection{User Dashboard}
+\begin{itemize}
+\item Map overlay for route editing
+\item Bus status monitoring panel
+\item Breakdown history analytics
+\item Manual override controls
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\linewidth]{dashboard.png}
+\caption{Component Architecture of Dashboard Interface}
+\label{fig:dash}
+\end{figure}
+
+\subsection{User Interaction Flow}
+The interface follows a streamlined workflow:
+
+\begin{enumerate}
+\item User selects tracking mode (bus-specific or route-based)
+\item System fetches real-time data from Firebase
+\item Backend computes ETAs using current speed and route topology
+\item Frontend renders:
+\begin{itemize}
+\item Dynamic route visualization
+\item Sortable ETA tables
+\item Interactive map markers
+\end{itemize}
+\item Automatic alerts trigger for abnormal conditions
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\linewidth]{UI1.png}
+\caption{Route Visualisation of Bus with ETA}
+\label{fig:UI}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\linewidth]{arrival_time.png}
+\caption{Arrival Time Checking}
+\label{fig:UI2}
+\end{figure}
+
+\subsection{Performance Optimization}
+The interface implements several optimisation techniques:
+
+\begin{itemize}
+\item \textbf{Data Fetching}:
+\item Delta updates through Firebase listeners
+\item Client-side caching of static route data
+\end{itemize}
+
+
+
+
+\section{Conclusion}
+\vspace{0.5em}
+This paper presents the design, development, and implementation of a Real-Time Bus Tracking System leveraging affordable hardware and open-source software tools. The system effectively addresses common challenges faced by traditional public transportation systems, such as schedule uncertainty, lack of real-time visibility, and delayed incident response.\\
+
+Through integration of ESP32 microcontrollers, NEO-6M GPS modules, Firebase Realtime Database, and a Python Flask backend, the system successfully delivers continuous location tracking, accurate ETA predictions, and automated breakdown alerts. Testing results demonstrate high reliability, real-time performance, and user-friendly operation through the web dashboard interface.\\
+
+The proposed solution not only improves commuter experience by providing live updates but also enhances operational efficiency for transit administrators. Its scalable, modular design makes it adaptable to a wide range of deployment scenarios, from educational institutions to municipal transport networks.
+
+\vspace{1em}
+Future work includes mobile apps and AI-enhanced predictions.
+
+\section*{References}
+
+\begin{enumerate}
+\item Firebase Realtime Database Documentation – \url{https://firebase.google.com/docs/database}
+\item Flask Web Framework – \url{https://flask.palletsprojects.com}
+\item SQLAlchemy ORM – \url{https://www.sqlalchemy.org}
+\item Haversine Formula – \url{https://www.movable-type.co.uk/scripts/latlong.html}
+\item Public Transport Real-Time System Studies – IEEE Journals
+\item Stack Overflow and GitHub Discussions for bug fixes and enhancements
+\item Python Official Documentation – \url{https://docs.python.org/3/}
+\item Ron DuPlain (2013), \textit{Beginning Flask: Web Development, One Drop at a Time}, Apress.
+\item Ashok Kumar S (2018), \textit{Mastering Firebase for Android Development}, Packt Publishing.
+\item Ramesh, S.V.R. and Rajashekar, M. (2015), “GPS and GSM Based Bus Tracking System,” \textit{International Journal of Engineering and Technology}, 7(4), pp.1272–1275.
+\item Kumar, T.P. and Krishna, B.V. (2018), “IoT-Based Smart Public Transportation System,” \textit{International Journal of Engineering Research \& Technology}, 7(5).
+\end{enumerate}
+
+
+\end{multicols}
+\end{document}
