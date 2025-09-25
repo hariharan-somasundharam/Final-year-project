@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}Available Buses | CityBus Tracker{% endblock %}
+{% block header %}🚍 Available Buses{% endblock %}
+{% block tagline %}Find buses for your route{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='available-buses.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="dashboard-container">
+    <!-- Search Card -->
+    <div class="feature-card search-card">
+        <form method="GET" action="{{ url_for('available_buses') }}">
+            <div class="form-group">
+                <label for="start">Your Current Stop:</label>
+                <select name="start" id="start" required class="styled-select">
+                    <option value="">Select Current Location</option>
+                    {% for stop in bus_stops %}
+                        <option value="{{ stop }}" {% if stop == start %}selected{% endif %}>{{ stop }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="end">Destination Stop:</label>
+                <select name="end" id="end" required class="styled-select">
+                    <option value="">Select Destination</option>
+                    {% for stop in bus_stops %}
+                        <option value="{{ stop }}" {% if stop == end %}selected{% endif %}>{{ stop }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button type="submit" class="action-btn">Find Buses</button>
+        </form>
+    </div>
+
+    <!-- Results Card (Initially hidden) -->
+    {% if start and end %}
+    <div class="feature-card results-card">
+        <h2 class="route-title">
+            <span class="from-stop">From: {{ start }}</span>
+            <span class="route-arrow">→</span>
+            <span class="to-stop">To: {{ end }}</span>
+        </h2>
+
+        {% if error %}
+            <div class="error-message">{{ error }}</div>
+        {% endif %}
+
+        {% if available_buses %}
+        <div class="buses-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bus</th>
+                        <th>Current Location</th>
+                        <th>Arrival at Your Stop</th>
+                        <th>Time Left</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bus in available_buses %}
+                    <tr>
+                        <td class="bus-number">{{ bus.bus }}</td>
+                        <td>{{ bus.current_stop }}</td>
+                        <td>
+                            {% if bus.arrival_time == "Arriving now!" %}
+                                <span class="arriving-now">{{ bus.arrival_time }}</span>
+                            {% else %}
+                                {{ bus.arrival_time }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if bus.remaining_time == "The bus is at your stop" %}
+                                <span class="at-stop">{{ bus.remaining_time }}</span>
+                            {% else %}
+                                {{ bus.remaining_time }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button class="action-btn"
+                                onclick="window.location.href='/bus/{{ bus.bus }}/visualization?from={{ start|urlencode }}&to={{ end|urlencode }}'"
+                                class="detail-btn">
+                                View Route
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <div class="no-buses">
+                No buses available for this route
+            </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Back Button -->
+    <a href="javascript:history.back()" class="back-btn">Back</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function goBack() {
+        window.history.back();
+    }
+
+    // Dropdown behavior
+    document.querySelectorAll('.styled-select').forEach(select => {
+        let isExpanded = false;
+        const originalHeight = select.offsetHeight;
+        
+        select.addEventListener('mousedown', function(e) {
+            if (!isExpanded) {
+                this.style.height = 'auto';
+                this.size = 5;
+                isExpanded = true;
+                e.preventDefault();
+            }
+        });
+        
+        select.addEventListener('change', function() {
+            this.size = 1;
+            this.style.height = originalHeight + 'px';
+            isExpanded = false;
+            this.blur();
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!select.contains(e.target)) {
+                select.size = 1;
+                select.style.height = originalHeight + 'px';
+                isExpanded = false;
+            }
+        });
+    });
+</script>
+
+<script>
+function showRouteVisualization(busId, fromStop, toStop) {
+    // Store selections in session storage
+    sessionStorage.setItem('userFromStop', fromStop);
+    sessionStorage.setItem('userToStop', toStop);
+    
+    // Redirect to visualization-only page
+    window.location.href = `/bus/${busId}/visualization`;
+}
+
+function showRoute(busId, fromStop, toStop) {
+    // Redirect with parameters in URL
+    window.location.href = `/bus/${busId}/visualization?from=${encodeURIComponent(fromStop)}&to=${encodeURIComponent(toStop)}`;
+}
+
+</script>
+
+{% endblock %}

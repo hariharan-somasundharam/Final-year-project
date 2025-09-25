@@ -1,0 +1,691 @@
+/* bus-dashboard.css */
+:root {
+  --primary: #4361ee;
+  --primary-dark: #3a0ca3;
+  --accent: #4895ef;
+  --accent-light: #4cc9f0;
+  --danger: #f72585;
+  --light: #f8f9fa;
+  --dark: #2b2d42;
+  --gray: #6c757d;
+  --gray-dark: #5a6268;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background-image: url("https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  margin: 0;
+  padding: 0;
+  color: var(--dark);
+}
+
+.page-wrapper {
+  min-height: 100vh;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(5px);
+}
+
+/* Header */
+.main-header {
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    var(--primary-dark) 100%
+  );
+  color: white;
+  padding: 2rem 0;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.tagline {
+  margin: 0.5rem 0 0;
+  font-weight: 300;
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+/* Dashboard Container */
+.dashboard-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+  width: 70%;
+}
+
+/* Cards */
+.feature-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.feature-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0%,
+    var(--primary-dark) 100%
+  );
+}
+
+.bus-info-card {
+  border-top: 5px solid var(--accent-light);
+}
+
+.arrival-card {
+  border-top: 5px solid var(--danger);
+}
+
+/* Info Items */
+.bus-info-item {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.bus-info-item strong {
+  color: var(--primary);
+}
+
+.current-stop {
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+/* Buttons */
+.action-btn {
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    var(--primary-dark) 100%
+  );
+  color: white;
+  border: none;
+  padding: 0.8rem 1.8rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #3a56e8 0%, #2f0a8f 100%);
+}
+
+.route-btn {
+  background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.8rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.route-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #3a56e8 0%, #2f0a8f 100%);
+}
+
+.back-btn {
+  
+  display: inline-block;
+  margin-top: 2rem;
+  background: var(--gray);
+  color: white;
+  padding: 0.8rem 1.8rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.back-btn:hover {
+  background: var(--gray-dark);
+  transform: translateY(-2px);
+}
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--dark);
+}
+
+.styled-select {
+  width: 100%;
+  height: 2.8rem; /* Fixed height when collapsed */
+  padding-left: 1.2rem !important;
+  padding: 0.8rem 1.2rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  transition: all 0.3s;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* Expanded state */
+.styled-select[size] {
+  height: auto;
+  max-height: 10.5rem; /* Exactly 5 options (1.5rem x 5 + padding) */
+  padding: 0;
+  background-image: none;
+  overflow-y: auto;
+}
+
+/* Option styling */
+.styled-select option {
+  padding: 0.5rem 1rem;
+  height: 1.5rem;
+  line-height: 1.5rem;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+/* Scrollbar styling */
+.styled-select::-webkit-scrollbar {
+  width: 8px;
+}
+.styled-select::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 0 4px 4px 0;
+}
+.styled-select::-webkit-scrollbar-thumb {
+  background: #4361ee;
+  border-radius: 4px;
+}
+.styled-select[size] option {
+  padding-left: 1.2rem; /* Match select padding */
+  margin-left: 0;
+}
+
+/* Ensure the first option matches select padding */
+.styled-select > option:first-child {
+  padding-left: 1.2rem;
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--danger);
+  transition: transform 0.2s;
+}
+
+.close-btn:hover {
+  transform: scale(1.2);
+}
+
+/* Arrival Info Modal Specific Styles */
+.arrival-info {
+  padding: 1.5rem 0;
+}
+
+.arrival-info .bus-info-item {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  padding: 0.8rem;
+  background-color: rgba(248, 249, 250, 0.5);
+  border-radius: 8px;
+}
+
+/* Route Visualization Styles */
+.route-map {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.route-line {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  min-height: 80px;
+}
+
+.route-stop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 18%;
+  position: relative;
+}
+
+.stop-marker {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 3px solid var(--accent);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 2;
+}
+
+.stop-marker.bus-current {
+  background: var(--primary);
+  border-color: var(--primary-dark);
+  color: white;
+}
+
+.stop-marker.user-stop {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: white;
+}
+
+.stop-name {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Horizontal arrows */
+.route-line:not(:last-child) .route-stop:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 25px;
+  left: 75px;
+  width: calc(100% - 50px);
+  height: 2px;
+  background: var(--accent);
+  z-index: 1;
+}
+
+.route-line:not(:last-child) .route-stop:not(:last-child)::before {
+  content: "➤";
+  position: absolute;
+  top: 15px;
+  left: calc(100% - 20px);
+  color: var(--accent);
+  z-index: 2;
+}
+
+/* Vertical connecting arrows */
+.route-line:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  right: 9%;
+  width: 2px;
+  height: 40px;
+  background: var(--accent);
+}
+
+.route-line:nth-child(even)::after {
+  right: auto;
+  left: 9%;
+}
+
+.route-line:not(:last-child)::before {
+  content: "➤";
+  position: absolute;
+  bottom: -30px;
+  right: 9%;
+  color: var(--accent);
+  transform: rotate(90deg);
+  z-index: 2;
+}
+
+.route-line:nth-child(even)::before {
+  right: auto;
+  left: 9%;
+  transform: rotate(-90deg);
+}
+
+/* Legend */
+.route-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--light);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .route-line {
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 1rem;
+  }
+
+  .route-stop {
+    width: 30%;
+  }
+
+  .route-line:not(:last-child) .route-stop:not(:last-child)::after,
+  .route-line:not(:last-child) .route-stop:not(:last-child)::before,
+  .route-line:not(:last-child)::after,
+  .route-line:not(:last-child)::before {
+    display: none;
+  }
+}
+
+/* Route Visualization */
+.route-visual {
+  margin-top: 1rem;
+}
+
+.route-step {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.8rem;
+  position: relative;
+  padding-left: 2rem;
+}
+
+.route-step:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.5rem;
+  height: 1.5rem;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.route-step.current:before {
+  background: var(--primary);
+  border: 3px solid var(--accent-light);
+}
+
+.route-step:after {
+  content: "";
+  position: absolute;
+  left: 0.7rem;
+  top: 2rem;
+  height: 2rem;
+  width: 2px;
+  background: var(--accent);
+}
+
+.route-step:last-child:after {
+  display: none;
+}
+
+.route-name {
+  margin-left: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-container {
+    width: 90%;
+    padding: 1rem;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .feature-card {
+    padding: 1.5rem;
+  }
+
+  .modal-content {
+    padding: 1.5rem;
+    width: 95%;
+  }
+}
+
+/* Status indicators */
+.arriving-now {
+  color: #4cc9f0;
+  font-weight: 600;
+}
+
+.at-stop {
+  color: #4895ef;
+  font-weight: 600;
+}
+
+.passed-stop {
+  color: #f72585;
+  font-weight: 500;
+}
+
+.arrival-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.left-btn,
+.right-btn {
+  width: fit-content;
+}
+
+/* This will group both buttons in one line, aligned left and right */
+.left-btn {
+  align-self: flex-start;
+}
+
+.right-btn {
+  align-self: flex-end;
+  margin-top: -60px; /* adjust this if needed to pull it up on same line */
+}
+
+/* Timeline Visualization Styles */
+.timeline-container {
+    display: flex;
+    flex-direction: column;
+    margin: 2rem 0;
+    position: relative;
+    padding: 0 2rem;
+}
+
+.timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--accent);
+    transform: translateX(-50%);
+    z-index: 1;
+    border-radius: 2px;
+}
+
+.timeline-stop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 2;
+    min-height: 50px;
+}
+
+.timeline-marker-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    display: flex;
+    justify-content: center;
+}
+
+.timeline-marker {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 3px solid var(--accent);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    font-weight: bold;
+}
+
+.timeline-time {
+    position: absolute;
+    right: 50%;
+    margin-right: 40px;
+    width: 100px;
+    text-align: right;
+}
+
+.timeline-name {
+    position: absolute;
+    left: 50%;
+    margin-left: 40px;
+    width: 100px;
+    text-align: left;
+}
+
+.stop-name {
+    font-weight: 500;
+    color: var(--dark);
+    font-size: 1rem;
+}
+
+.arrival-time {
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 0.9rem;
+}
+
+.arrival-time.now {
+    color: var(--primary-dark);
+    font-weight: 700;
+}
+
+.arrival-time.passed {
+    color: var(--gray);
+    font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .timeline-container {
+        padding: 0 0.5rem;
+    }
+    
+    .timeline-marker {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+    }
+    
+    .timeline-time, .timeline-name {
+        font-size: 0.9rem;
+        width: 80px;
+    }
+    
+    .stop-name {
+        font-size: 0.9rem;
+    }
+    
+    .arrival-time {
+        font-size: 0.8rem;
+    }
+}
+
+/* Add to bus-dashboard.css */
+.positioning-message {
+    color: #666;
+    font-style: italic;
+}
+
+.positioning-alert {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+.positioning-alert i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--primary);
+}
+
+.positioning-alert p {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+}

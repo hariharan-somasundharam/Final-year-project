@@ -1,0 +1,509 @@
+/* available-buses.css - Enhanced Responsive Version */
+:root {
+  --primary: #4361ee;
+  --primary-dark: #3a0ca3;
+  --accent: #4895ef;
+  --accent-light: #4cc9f0;
+  --danger: #f72585;
+  --light: #f8f9fa;
+  --dark: #2b2d42;
+  --gray: #6c757d;
+  --gray-dark: #5a6268;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  color: var(--dark);
+}
+
+.page-wrapper {
+  min-height: 100vh;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(5px);
+}
+
+/* Header */
+.main-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: 1.5rem 0;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.header-content h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.tagline {
+  margin: 0.5rem 1rem 0;
+  font-weight: 300;
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+/* Dashboard Container */
+.dashboard-container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+  display: block;
+  justify-content: center;
+}
+
+/* Cards */
+.feature-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  width: 80%;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 80%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
+}
+
+.search-card {
+  border-top: 4px solid var(--accent-light);
+}
+
+.results-card {
+  border-top: 4px solid var(--primary);
+}
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--dark);
+  font-size: 0.95rem;
+}
+
+.styled-select {
+  width: 100%;
+  height: 2.8rem;
+  padding-left: 1rem !important;
+  padding: 0.7rem 1rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  background-size: 1rem;
+  transition: all 0.3s;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* Expanded state */
+.styled-select[size] {
+  height: auto;
+  max-height: 10.5rem;
+  padding: 0;
+  background-image: none;
+  overflow-y: auto;
+}
+
+/* Option styling */
+.styled-select option {
+  padding: 0.5rem 1rem;
+  height: 1.5rem;
+  line-height: 1.5rem;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+/* Buttons */
+.action-btn {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 0.95rem;
+  width: 100%;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #3a56e8 0%, #2f0a8f 100%);
+}
+
+.back-btn {
+  display: inline-block;
+  margin-top: 1.5rem;
+  background: var(--gray);
+  color: white;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 0.95rem;
+  width: 100%;
+  text-align: center;
+}
+
+.back-btn:hover {
+  background: var(--gray-dark);
+  transform: translateY(-2px);
+}
+
+/* Route Title */
+.route-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--dark);
+  text-align: center;
+}
+
+.from-stop, .to-stop {
+  font-weight: 600;
+  color: var(--primary-dark);
+  font-size: 1rem;
+}
+
+.route-arrow {
+  color: var(--accent);
+  font-size: 1.2rem;
+  transform: rotate(90deg);
+}
+
+/* Table Styles */
+.buses-table {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  min-width: 600px; /* Ensures table doesn't get too narrow on mobile */
+}
+
+th, td {
+  padding: 0.8rem 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 0.9rem;
+}
+
+th {
+  background-color: var(--primary);
+  color: white;
+  font-weight: 500;
+  position: sticky;
+  top: 0;
+}
+
+tr:hover {
+  background-color: #f8f9fa;
+}
+
+.bus-number {
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+/* Detail Button */
+.detail-btn {
+  background: var(--accent);
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.detail-btn:hover {
+  background: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Status Indicators */
+.arriving-now {
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.at-stop {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* No Buses Message */
+.no-buses {
+  text-align: center;
+  padding: 1.5rem;
+  color: var(--gray);
+  font-size: 1rem;
+}
+
+/* Error Message */
+.error-message {
+  color: var(--danger);
+  padding: 1rem;
+  background: rgba(247, 37, 133, 0.1);
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+/* Responsive Breakpoints */
+@media (min-width: 480px) {
+  .action-btn, .back-btn {
+    width: auto;
+  }
+  
+  .back-btn {
+    width: auto;
+    display: inline-block;
+  }
+}
+
+@media (min-width: 576px) {
+  .dashboard-container {
+    padding: 1.5rem;
+  }
+  
+  .header-content h1 {
+    font-size: 2rem;
+  }
+  
+  .tagline {
+    font-size: 1.1rem;
+  }
+  
+  .feature-card {
+    padding: 1.8rem;
+    border-radius: 14px;
+  }
+  
+  .action-btn {
+    padding: 0.8rem 1.8rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .dashboard-container {
+    padding: 2rem;
+    max-width: 800px;
+  }
+  
+  .main-header {
+    padding: 2rem 0;
+  }
+  
+  .header-content h1 {
+    font-size: 2.5rem;
+  }
+  
+  .tagline {
+    font-size: 1.2rem;
+  }
+  
+  .feature-card {
+    padding: 2rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+  }
+  
+  .route-title {
+    flex-direction: row;
+    gap: 1rem;
+  }
+  
+  .route-arrow {
+    transform: rotate(0deg);
+    font-size: 1.5rem;
+  }
+  
+  .from-stop, .to-stop {
+    font-size: 1.1rem;
+  }
+  
+  th, td {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+  
+  .detail-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .dashboard-container {
+    max-width: 1000px;
+  }
+  
+  .feature-card {
+    width: 100%;
+  }
+}
+
+/* Special styles for very small devices */
+@media (max-width: 360px) {
+  .header-content h1 {
+    font-size: 1.6rem;
+  }
+  
+  .tagline {
+    font-size: 0.9rem;
+  }
+  
+  .feature-card {
+    padding: 1.2rem;
+  }
+  
+  .styled-select {
+    font-size: 0.9rem;
+    padding: 0.6rem 0.8rem;
+  }
+}
+
+
+/* Responsive Fixes - Added by ChatGPT */
+
+/* Center cards always */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Fix card width at various screen sizes */
+@media (max-width: 575.98px) {
+  .feature-card {
+    width: 80%;
+    padding: 1rem;
+  }
+
+  .route-title {
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.95rem;
+  }
+
+  .route-arrow {
+    transform: rotate(90deg);
+    font-size: 1.2rem;
+  }
+
+  .action-btn,
+  .back-btn {
+    width: 30%;
+    font-size: 0.9rem;
+  }
+
+  .header-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .tagline {
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .feature-card {
+    width: 90%;
+  }
+
+  .route-title {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .action-btn,
+  .back-btn {
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .feature-card {
+    width: 85%;
+  }
+
+  .route-title {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .action-btn,
+  .back-btn {
+    width: auto;
+  }
+}
+
+@media (min-width: 992px) {
+  .feature-card {
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .dashboard-container {
+    padding: 2rem;
+  }
+
+  .route-title {
+    flex-direction: row;
+    gap: 1.5rem;
+  }
+}
+
+/* Scroll table horizontally if it overflows */
+.buses-table {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  min-width: 100%;
+}
+
+@media (max-width: 575.98px) {
+  table {
+    min-width: 600px;
+  }
+}

@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block title %}Bus {{ bus.id }} Dashboard | CityBus Tracker{% endblock %}
+{% block header %}🚍 Bus {{ bus.id }} Dashboard{% endblock %}
+{% block tagline %}Real-time tracking information{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='bus-dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+
+
+
+<!-- Main Content -->
+<div class="dashboard-container">
+    <!-- Bus Info Card -->
+    <div class="feature-card bus-info-card">
+        <div class="bus-info-item">
+            <strong>Bus ID:</strong> {{ bus.id }}
+        </div>
+        <div class="bus-info-item">
+            <strong>Current Stop:</strong> 
+            <span class="current-stop">
+                {% if bus.current_stop and bus.current_stop != "Positioning..." %}
+                    {{ bus.current_stop }}
+                {% else %}
+                    <span class="positioning-message">Positioning the bus...</span>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+
+    <!-- Arrival Check Card -->
+    <div class="feature-card arrival-card">
+        <form id="arrivalForm" method="GET">
+            <div class="form-group">
+                <label for="user_stop">Enter Your Stop:</label>
+                <select name="user_stop" id="user_stop" class="styled-select">
+                    {% for stop in bus.route %}
+                    <option value="{{ stop }}" {% if stop == user_stop %}selected{% endif %}>{{ stop }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="action-btn left-btn">Check Arrival Time</button>
+            <button type="button" class="route-btn right-btn" onclick="showRoute()">View Route Map</button>
+        </form>
+    </div>
+
+    <!-- Back Button -->
+    <a href="javascript:history.back()" class="back-btn">Back</a>
+</div>
+
+<!-- Route Modal -->
+<div id="routeModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeRouteModal()">&times;</span>
+        <h2>Route Visualization</h2>
+        
+        {% if bus.current_stop and bus.current_stop != "Positioning..." %}
+            <div class="timeline-container">
+                <div class="timeline-line"></div>
+                {% set current_index = bus.route.index(bus.current_stop) %}
+                {% for stop_name in bus.route %}
+                    {% set stop_index = loop.index0 %}
+                    <div class="timeline-stop">
+                        <div class="timeline-time">
+                            {% if arrival_times[stop_index] == "Passed" %}
+                                <span class="arrival-time passed">Passed</span>
+                            {% elif stop_index == current_index %}
+                                <span class="arrival-time now">{{ arrival_times[stop_index] }}</span>
+                            {% else %}
+                                <span class="arrival-time">{{ arrival_times[stop_index] }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="timeline-marker-container">
+                            <div class="timeline-marker 
+                                {% if stop_index == current_index %}current-stop{% endif %} 
+                                {% if stop_name == user_stop %}user-stop{% endif %}">
+                                {% if stop_index == current_index %}
+                                    <span class="bus-icon">🚌</span>
+                                {% elif stop_name == user_stop %}
+                                    <span class="user-icon">👤</span>
+                                {% else %}
+                                    {{ loop.index }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="timeline-name">
+                            <span class="stop-name">{{ stop_name }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="positioning-alert">
+                <i class="fa fa-spinner fa-spin"></i>
+                <p>The bus's location is being positioned. Please wait...</p>
+            </div>
+        {% endif %}
+        
+        <div class="route-legend">
+            <div class="legend-item">
+                <span class="bus-icon">🚌</span> Current Bus Location
+            </div>
+            {% if user_stop %}
+            <div class="legend-item">
+                <span class="user-icon">👤</span> Your Selected Stop
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Arrival Info Modal -->
+{% if user_stop %}
+<div id="arrivalInfoModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeArrivalModal()">&times;</span>
+        <h2>Arrival Information</h2>
+        <div class="arrival-info">
+            <div class="bus-info-item">
+                <strong>Your Stop:</strong> {{ user_stop }}
+            </div>
+            <div class="bus-info-item">
+                <strong>Estimated Arrival Time:</strong> 
+                {% if estimated_time == "Arriving now!" %}
+                    <span class="arriving-now">{{ estimated_time }}</span>
+                {% else %}
+                    {{ estimated_time }}
+                {% endif %}
+            </div>
+            <div class="bus-info-item">
+                <strong>
+                    {% if remaining_time == "The bus is at your stop" %}
+                        <span class="at-stop">{{ remaining_time }}</span>
+                    {% else %}
+                        {{ remaining_time }}
+                    {% endif %}
+                </strong>
+            </div>
+        </div>
+        <button class="action-btn" onclick="closeArrivalModal()" style="margin-top: 1.5rem;">OK</button>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Route Modal
+    function showRoute() {
+        document.getElementById('routeModal').style.display = 'flex';
+    }
+
+    function closeRouteModal() {
+        document.getElementById('routeModal').style.display = 'none';
+    }
+
+    function closeArrivalModal() {
+        document.getElementById('arrivalInfoModal').style.display = 'none';
+    }
+
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+        if (event.target.className === 'modal') {
+            closeRouteModal();
+            closeArrivalModal();
+        }
+    }
+
+    // Dropdown behavior
+    document.querySelectorAll('.styled-select').forEach(select => {
+        let isExpanded = false;
+        const originalHeight = select.offsetHeight;
+        
+        select.addEventListener('mousedown', function(e) {
+            if (!isExpanded) {
+                this.style.height = 'auto';
+                this.size = 5;
+                isExpanded = true;
+                e.preventDefault();
+            }
+        });
+        
+        select.addEventListener('change', function() {
+            this.size = 1;
+            this.style.height = originalHeight + 'px';
+            isExpanded = false;
+            this.blur();
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!select.contains(e.target)) {
+                select.size = 1;
+                select.style.height = originalHeight + 'px';
+                isExpanded = false;
+            }
+        });
+    });
+
+    // Prevent form submission if no stop is selected
+    document.getElementById('arrivalForm').addEventListener('submit', function(e) {
+        const select = document.getElementById('user_stop');
+        if (!select.value) {
+            e.preventDefault();
+            alert('Please select a stop first');
+        } else {
+            // Set flag in localStorage to trigger popup after reload
+            localStorage.setItem('showArrivalModal', 'true');
+        }
+    });
+
+    // Show arrival modal only if form was submitted
+    window.addEventListener('load', () => {
+        if (localStorage.getItem('showArrivalModal') === 'true') {
+            const modal = document.getElementById('arrivalInfoModal');
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+            localStorage.removeItem('showArrivalModal'); // clear after showing once
+        }
+    });
+</script>
+{% endblock %}
